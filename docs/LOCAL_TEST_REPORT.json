@@ -1,0 +1,132 @@
+{
+  "checks": [
+    {
+      "name": "exists:src/App.jsx",
+      "ok": true
+    },
+    {
+      "name": "exists:src/main.jsx",
+      "ok": true
+    },
+    {
+      "name": "exists:src/data/content.json",
+      "ok": true
+    },
+    {
+      "name": "exists:src/styles/index.css",
+      "ok": true
+    },
+    {
+      "name": "exists:tailwind.config.cjs",
+      "ok": true
+    },
+    {
+      "name": "exists:public/assets/hero-poster.svg",
+      "ok": true
+    },
+    {
+      "name": "exists:public/video/README.txt",
+      "ok": true
+    },
+    {
+      "name": "exists:package.json",
+      "ok": true
+    },
+    {
+      "name": "exists:README.md",
+      "ok": true
+    },
+    {
+      "name": "exists:docs/CMS_INTEGRATION.md",
+      "ok": true
+    },
+    {
+      "name": "hero_video_autoplay_muted_loop_playsInline",
+      "ok": true
+    },
+    {
+      "name": "hero_video_poster_present",
+      "ok": true
+    },
+    {
+      "name": "content_json_has_brand_name",
+      "ok": true,
+      "value": "Lumiára"
+    },
+    {
+      "name": "app_uses_brand_from_json",
+      "ok": true
+    },
+    {
+      "name": "carousel_two_cards_logic",
+      "ok": true
+    },
+    {
+      "name": "featured_mapped_from_json",
+      "ok": true
+    },
+    {
+      "name": "testimonials_mapped",
+      "ok": true
+    },
+    {
+      "name": "avatars_have_alt",
+      "ok": true
+    },
+    {
+      "name": "blog_mapped",
+      "ok": true
+    },
+    {
+      "name": "aria_nav_present",
+      "ok": true
+    },
+    {
+      "name": "aria_menuitem_present",
+      "ok": true
+    },
+    {
+      "name": "cta_buttons_have_aria",
+      "ok": true
+    },
+    {
+      "name": "cta_bg_class_present",
+      "ok": true
+    },
+    {
+      "name": "brand_variable_in_css",
+      "ok": true
+    },
+    {
+      "name": "chat_widget_absent",
+      "ok": true,
+      "found_count": 0
+    },
+    {
+      "name": "tailwind_palette_limited",
+      "ok": true
+    },
+    {
+      "name": "product_images_have_alt",
+      "ok": true
+    },
+    {
+      "name": "contrast_white_on_brand",
+      "ok": false,
+      "value": 3.69
+    },
+    {
+      "name": "custom_cursor_present",
+      "ok": true
+    },
+    {
+      "name": "docs_present",
+      "ok": true
+    },
+    {
+      "name": "all_content_images_exist",
+      "ok": true,
+      "missing": []
+    }
+  ]
+}

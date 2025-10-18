@@ -1,0 +1,1 @@
+Add an optimized MP4 or WebM hero video here and name it 'hero-placeholder.mp4' or update the path in src/App.jsx.

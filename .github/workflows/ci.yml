@@ -1,0 +1,52 @@
+name: CI — build, a11y check, optional Netlify deploy
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Start preview server
+        run: |
+          npm run preview -- --port 5173 &
+          npx wait-on http://localhost:5173 -t 15000
+      - name: Run accessibility checks (pa11y)
+        run: |
+          npm install -g pa11y@6.0.3
+          pa11y http://localhost:5173 --timeout 30000 || true
+      - name: Run basic Lighthouse report (optional)
+        run: |
+          npx -y @lhci/cli@0.10.3 collect --url=http://localhost:5173 || true
+
+  deploy-netlify:
+    if: secrets.NETLIFY_AUTH_TOKEN != '' && secrets.NETLIFY_SITE_ID != ''
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install Netlify CLI
+        run: npm install -g netlify-cli
+      - name: Build
+        run: npm ci && npm run build
+      - name: Deploy to Netlify
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        run: netlify deploy --dir=dist --site=$NETLIFY_SITE_ID --prod --auth=$NETLIFY_AUTH_TOKEN

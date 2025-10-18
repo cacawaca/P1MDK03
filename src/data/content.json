@@ -1,0 +1,93 @@
+{
+  "brand": {
+    "name": "Lumiára",
+    "slogan": "Сияние, основанное на науке",
+    "description": "Натуральные ингредиенты + клинически проверенные формулы. Уход, который возвращает коже баланс и уверенность.",
+    "contactEmail": "hello@lumiara.example",
+    "phone": "+41 44 000 00 00"
+  },
+  "products": [
+    {
+      "id": 1,
+      "name": "Hydra Glow Cream",
+      "price": "€49",
+      "img": "/assets/product1.svg",
+      "slug": "hydra-glow-cream"
+    },
+    {
+      "id": 2,
+      "name": "Silk Serum",
+      "price": "€69",
+      "img": "/assets/product2.svg",
+      "slug": "silk-serum"
+    },
+    {
+      "id": 3,
+      "name": "Velvet Lip Tint",
+      "price": "€29",
+      "img": "/assets/product3.svg",
+      "slug": "velvet-lip-tint"
+    },
+    {
+      "id": 4,
+      "name": "Radiance Palette",
+      "price": "€59",
+      "img": "/assets/product4.svg",
+      "slug": "radiance-palette"
+    }
+  ],
+  "featured": [
+    {
+      "title": "Ночная маска Lumiára",
+      "subtitle": "Интенсивное восстановление",
+      "img": "/assets/feat1.svg"
+    },
+    {
+      "title": "Дневной крем SPF 30",
+      "subtitle": "Защита и сияние",
+      "img": "/assets/feat2.svg"
+    },
+    {
+      "title": "Сыворотка Vitamin C",
+      "subtitle": "Яркость и тонус",
+      "img": "/assets/feat3.svg"
+    }
+  ],
+  "testimonials": [
+    {
+      "name": "Екатерина, 28",
+      "text": "Крем Lumena сделал мою кожу гладкой за неделю!",
+      "img": "/assets/user1.svg"
+    },
+    {
+      "name": "Мария, визажист",
+      "text": "Помада держится весь день и выглядит натурально.",
+      "img": "/assets/user2.svg"
+    },
+    {
+      "name": "Ольга",
+      "text": "Лёгкая текстура и видимый результат.",
+      "img": "/assets/user3.svg"
+    }
+  ],
+  "blog": [
+    {
+      "title": "Как выбрать дневной крем",
+      "excerpt": "Краткий гайд по SPF и ингредиентам.",
+      "img": "/assets/blog1.svg",
+      "slug": "vybor-dnevnoj-krem"
+    },
+    {
+      "title": "Ритуал ночного ухода",
+      "excerpt": "Эффективные шаги перед сном.",
+      "img": "/assets/blog2.svg",
+      "slug": "ritual-nochnogo-uhoda"
+    },
+    {
+      "title": "Польза витамина C",
+      "excerpt": "Преимущества и способы использования.",
+      "img": "/assets/blog3.svg",
+      "slug": "polza-vitamina-c"
+    }
+  ]
+}
