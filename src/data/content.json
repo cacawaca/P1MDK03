@@ -75,19 +75,22 @@
       "title": "Как выбрать дневной крем",
       "excerpt": "Краткий гайд по SPF и ингредиентам.",
       "img": "/assets/blog1.svg",
-      "slug": "vybor-dnevnoj-krem"
+      "slug": "vybor-dnevnoj-krem",
+      "url": "https://www.vichyconsult.com/ru/sovety-po-ukhodu-za-kozhei/kak-vybrat-dnevnoy-krem-dlya-litsa-article-763.aspx"
     },
     {
       "title": "Ритуал ночного ухода",
       "excerpt": "Эффективные шаги перед сном.",
       "img": "/assets/blog2.svg",
-      "slug": "ritual-nochnogo-uhoda"
+      "slug": "ritual-nochnogo-uhoda", 
+      "url": "https://www.loreal-paris.ru/beauty-magazine/skin-care/night-skin-care-routine"
     },
     {
       "title": "Польза витамина C",
       "excerpt": "Преимущества и способы использования.",
       "img": "/assets/blog3.svg",
-      "slug": "polza-vitamina-c"
+      "slug": "polza-vitamina-c",
+      "url": "https://www.theordinary.com/en-us/vitamin-c-guide"
     }
   ]
 }
