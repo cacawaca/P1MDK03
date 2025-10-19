@@ -1,8 +1,8 @@
-// App.jsx
 import React, { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'framer-motion'
 import content from './data/content.json'
 import LoginModal from './LoginModal'
+import ProductModal from './ProductModal'
 
 export default function App(){
   const { brand, products, featured, testimonials, blog } = content
@@ -14,7 +14,8 @@ export default function App(){
   const [favorites, setFavorites] = useState([])
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const [activeSection, setActiveSection] = useState('hero')
-  const [isScrolling, setIsScrolling] = useState(false)
+  const [selectedProduct, setSelectedProduct] = useState(null)
+  const [isProductModalOpen, setIsProductModalOpen] = useState(false)
 
   const containerRef = useRef(null)
   const heroRef = useRef(null)
@@ -42,15 +43,6 @@ export default function App(){
       setMousePosition({ x: e.clientX, y: e.clientY })
     }
 
-    const handleScroll = () => {
-      setIsScrolling(true)
-      clearTimeout(window.scrollTimeout)
-      window.scrollTimeout = setTimeout(() => setIsScrolling(false), 100)
-    }
-
-    window.addEventListener('mousemove', handleMouseMove)
-    window.addEventListener('scroll', handleScroll)
-
     const sections = [
       { id: 'hero', ref: heroRef },
       { id: 'about', ref: aboutRef },
@@ -77,7 +69,6 @@ export default function App(){
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove)
-      window.removeEventListener('scroll', handleScroll)
       observer.disconnect()
     }
   }, [])
@@ -104,11 +95,11 @@ export default function App(){
       if (existing) {
         return prev.map(item => 
           item.id === product.id 
-            ? { ...item, quantity: item.quantity + 1 }
+            ? { ...item, quantity: item.quantity + (product.quantity || 1) }
             : item
         )
       }
-      return [...prev, { ...product, quantity: 1 }]
+      return [...prev, { ...product, quantity: product.quantity || 1 }]
     })
   }
 
@@ -131,6 +122,16 @@ export default function App(){
     setCart(prev => prev.map(item => 
       item.id === productId ? { ...item, quantity: newQuantity } : item
     ))
+  }
+
+  const handleProductClick = (product) => {
+    setSelectedProduct(product)
+    setIsProductModalOpen(true)
+  }
+
+  const handleCloseProductModal = () => {
+    setIsProductModalOpen(false)
+    setSelectedProduct(null)
   }
 
   const fadeInUp = {
@@ -198,15 +199,17 @@ export default function App(){
       animate={{ y: 0, opacity: 1 }}
       transition={{ delay: 0.5 }}
     >
-      <div className="bg-white/80 backdrop-blur-md rounded-2xl px-6 py-3 shadow-lg border border-white/20">
-        <div className="flex items-center gap-8">
+      <div className="bg-white/90 backdrop-blur-md rounded-2xl px-6 py-3 shadow-2xl border border-white/20">
+        <div className="flex items-center gap-6">
           {['hero', 'about', 'collections', 'featured', 'testimonials', 'blog'].map(section => (
             <motion.button
               key={section}
-              className={`text-sm font-medium transition-colors relative ${
-                activeSection === section ? 'text-brand-600' : 'text-gray-600 hover:text-gray-900'
+              className={`text-sm font-medium transition-colors relative px-3 py-1 rounded-lg ${
+                activeSection === section 
+                  ? 'text-brand-600 bg-brand-50' 
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
               }`}
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ scale: 1.05, y: -1 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => {
                 const element = document.getElementById(section)
@@ -214,22 +217,21 @@ export default function App(){
               }}
             >
               {section.charAt(0).toUpperCase() + section.slice(1)}
-              {activeSection === section && (
-                <motion.div
-                  className="absolute -bottom-1 left-0 right-0 h-0.5 bg-brand-600"
-                  layoutId="activeSection"
-                />
-              )}
             </motion.button>
           ))}
           
+          <div className="w-px h-6 bg-gray-300 mx-2" />
+          
           <motion.button
             onClick={() => setIsLoginModalOpen(true)}
-            className="w-10 h-10 rounded-full bg-brand-600 flex items-center justify-center text-white shadow-lg"
-            whileHover={{ scale: 1.1, rotate: 5 }}
-            whileTap={{ scale: 0.9 }}
+            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-brand-600 to-brand-700 text-white rounded-xl font-semibold shadow-lg"
+            whileHover={{ scale: 1.05, y: -2 }}
+            whileTap={{ scale: 0.95 }}
           >
-            <span className="font-serif text-lg font-bold">L</span>
+            <span className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
+              <span className="text-xs font-bold">L</span>
+            </span>
+            Войти
           </motion.button>
         </div>
       </div>
@@ -250,6 +252,7 @@ export default function App(){
       onAddToCart={handleAddToCart}
       onAddToFavorites={handleAddToFavorites}
       favorites={favorites}
+      onProductClick={handleProductClick}
     />
   }
 
@@ -272,6 +275,15 @@ export default function App(){
         isOpen={isLoginModalOpen}
         onClose={() => setIsLoginModalOpen(false)}
         onLogin={handleLogin}
+      />
+
+      <ProductModal
+        product={selectedProduct}
+        isOpen={isProductModalOpen}
+        onClose={handleCloseProductModal}
+        onAddToCart={handleAddToCart}
+        onAddToFavorites={handleAddToFavorites}
+        isFavorite={favorites.some(fav => fav.id === selectedProduct?.id)}
       />
 
       <ScrollProgress />
@@ -351,7 +363,7 @@ export default function App(){
           </motion.p>
 
           <motion.div 
-            className="flex flex-col sm:flex-row gap-4 items-center justify-center"
+            className="flex flex-col sm:flex-row gap-4 items-center justify-center mb-24"
             variants={fadeInUp}
           >
             <motion.button
@@ -372,8 +384,38 @@ export default function App(){
             </motion.button>
           </motion.div>
 
+          {/* Интерактивный баннер с статистикой - ИСПРАВЛЕННЫЙ */}
           <motion.div
-            className="mt-20"
+            className="bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-2xl border border-white/20 mx-auto max-w-4xl"
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 1.2, duration: 0.8 }}
+            whileHover={{ y: -5 }}
+          >
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+              {[
+                { number: "98%", label: "Довольных клиентов", icon: "😊" },
+                { number: "5+", label: "Лет на рынке", icon: "⭐" },
+                { number: "10k+", label: "Продаж в месяц", icon: "🚀" },
+                { number: "24/7", label: "Поддержка", icon: "🛡️" }
+              ].map((stat, index) => (
+                <motion.div
+                  key={stat.label}
+                  className="group"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <div className="text-2xl mb-2">{stat.icon}</div>
+                  <div className="text-2xl font-serif font-bold text-brand-600 group-hover:scale-110 transition-transform">
+                    {stat.number}
+                  </div>
+                  <div className="text-sm text-gray-600 mt-1">{stat.label}</div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+
+          <motion.div
+            className="mt-12"
             animate={{ y: [0, 10, 0] }}
             transition={{ duration: 2, repeat: Infinity }}
           >
@@ -559,6 +601,9 @@ export default function App(){
                 key={product.id} 
                 product={product} 
                 onAddToCart={handleAddToCart}
+                onProductClick={handleProductClick}
+                onAddToFavorites={handleAddToFavorites}
+                isFavorite={favorites.some(fav => fav.id === product.id)}
                 index={index}
               />
             ))}
@@ -566,7 +611,7 @@ export default function App(){
         </div>
       </section>
 
-      {/* Featured Section */}
+      {/* Бестселлеры Section - ПЕРЕИМЕНОВАНО И УЛУЧШЕНО */}
       <section id="featured" ref={featuredRef} className="py-20 px-4 sm:px-6 bg-white relative overflow-hidden">
         <FloatingParticles />
         
@@ -579,8 +624,11 @@ export default function App(){
             className="text-center mb-16"
           >
             <motion.h2 variants={fadeInUp} className="font-serif text-4xl md:text-5xl font-semibold mb-6 text-gray-900">
-              Избранные продукты
+              Бестселлеры
             </motion.h2>
+            <motion.p variants={fadeInUp} className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Самые популярные продукты, которые выбирают наши клиенты
+            </motion.p>
           </motion.div>
 
           <motion.div
@@ -590,8 +638,45 @@ export default function App(){
             whileInView="visible"
             viewport={{ once: true }}
           >
-            {featured.map((item, index) => (
-              <FeaturedCard key={index} item={item} index={index} />
+            {[
+              {
+                id: 5,
+                name: "Ночная маска Lumiára",
+                price: "€59",
+                description: "Интенсивное восстановление кожи во время сна",
+                rating: 4.9,
+                reviews: 128,
+                benefits: ["Глубокое увлажнение", "Восстановление барьера", "Антивозрастной эффект"],
+                img: "/assets/feat1.svg"
+              },
+              {
+                id: 6,
+                name: "Дневной крем SPF 30",
+                price: "€45",
+                description: "Защита и сияние на весь день",
+                rating: 4.8,
+                reviews: 95,
+                benefits: ["SPF 30 защита", "Легкая текстура", "Естественное сияние"],
+                img: "/assets/feat2.svg"
+              },
+              {
+                id: 7,
+                name: "Сыворотка Vitamin C",
+                price: "€65",
+                description: "Яркость и тонус для сияющей кожи",
+                rating: 4.9,
+                reviews: 156,
+                benefits: ["Осветление тона", "Антиоксиданты", "Уменьшение пигментации"],
+                img: "/assets/feat3.svg"
+              }
+            ].map((item, index) => (
+              <BestSellerCard 
+                key={item.id} 
+                item={item} 
+                index={index}
+                onProductClick={handleProductClick}
+                onAddToCart={handleAddToCart}
+              />
             ))}
           </motion.div>
         </div>
@@ -690,7 +775,7 @@ export default function App(){
 }
 
 // Product Card Component
-const ProductCard = ({ product, onAddToCart, index }) => (
+const ProductCard = ({ product, onAddToCart, index, onProductClick, isFavorite, onAddToFavorites }) => (
   <motion.div
     variants={{
       hidden: { opacity: 0, y: 60 },
@@ -704,9 +789,10 @@ const ProductCard = ({ product, onAddToCart, index }) => (
         }
       }
     }}
-    className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group"
+    className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group cursor-pointer"
     whileHover={{ y: -8, scale: 1.02 }}
     whileTap={{ scale: 0.98 }}
+    onClick={() => onProductClick(product)}
   >
     <div className="relative overflow-hidden">
       <motion.img 
@@ -714,18 +800,48 @@ const ProductCard = ({ product, onAddToCart, index }) => (
         alt={product.name}
         className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
       />
-      <motion.div 
-        className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"
-      />
+      
+      <motion.button
+        onClick={(e) => {
+          e.stopPropagation();
+          onAddToFavorites(product);
+        }}
+        className="absolute top-4 right-4 w-10 h-10 bg-white/90 rounded-full flex items-center justify-center shadow-lg"
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+      >
+        <motion.span
+          animate={{ scale: isFavorite ? 1.2 : 1 }}
+          transition={{ type: "spring", stiffness: 300 }}
+        >
+          {isFavorite ? "❤️" : "🤍"}
+        </motion.span>
+      </motion.button>
+
+      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 flex items-center justify-center">
+        <motion.span
+          className="text-white text-lg font-semibold bg-black/50 px-4 py-2 rounded-xl"
+          initial={{ scale: 0 }}
+          whileHover={{ scale: 1 }}
+        >
+          Подробнее
+        </motion.span>
+      </div>
     </div>
+    
     <div className="p-6">
-      <h3 className="font-serif text-xl font-semibold mb-2 text-gray-900">{product.name}</h3>
+      <h3 className="font-serif text-xl font-semibold mb-2 text-gray-900 group-hover:text-brand-600 transition-colors">
+        {product.name}
+      </h3>
       <div className="flex items-center justify-between">
         <span className="text-2xl font-serif font-semibold text-brand-600">{product.price}</span>
         <motion.button
-          onClick={() => onAddToCart(product)}
-          className="px-6 py-2 bg-brand-600 text-white rounded-xl font-semibold hover:bg-brand-700 transition-colors"
-          whileHover={{ scale: 1.05 }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onAddToCart(product);
+          }}
+          className="px-6 py-2 bg-brand-600 text-white rounded-xl font-semibold hover:bg-brand-700 transition-colors shadow-lg"
+          whileHover={{ scale: 1.05, y: -1 }}
           whileTap={{ scale: 0.95 }}
         >
           В корзину
@@ -735,8 +851,8 @@ const ProductCard = ({ product, onAddToCart, index }) => (
   </motion.div>
 )
 
-// Featured Card Component
-const FeaturedCard = ({ item, index }) => (
+// Best Seller Card Component - НОВЫЙ КОМПОНЕНТ
+const BestSellerCard = ({ item, index, onProductClick, onAddToCart }) => (
   <motion.div
     variants={{
       hidden: { opacity: 0, y: 60 },
@@ -750,19 +866,49 @@ const FeaturedCard = ({ item, index }) => (
         }
       }
     }}
-    className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group"
+    className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group cursor-pointer"
     whileHover={{ y: -5 }}
+    onClick={() => onProductClick(item)}
   >
-    <div className="h-48 bg-gradient-to-br from-brand-50 to-cream-100 flex items-center justify-center">
+    <div className="h-48 bg-gradient-to-br from-brand-50 to-cream-100 flex items-center justify-center relative">
       <motion.img 
         src={item.img} 
-        alt={item.title}
+        alt={item.name}
         className="h-32 object-contain group-hover:scale-110 transition-transform duration-500"
       />
+      <div className="absolute top-4 left-4 bg-yellow-500 text-white px-2 py-1 rounded-full text-sm font-semibold">
+        ★ {item.rating}
+      </div>
     </div>
     <div className="p-6">
-      <h3 className="font-serif text-xl font-semibold mb-2 text-gray-900">{item.title}</h3>
-      <p className="text-gray-600">{item.subtitle}</p>
+      <h3 className="font-serif text-xl font-semibold mb-2 text-gray-900">{item.name}</h3>
+      <p className="text-gray-600 mb-3">{item.description}</p>
+      
+      <div className="flex flex-wrap gap-1 mb-4">
+        {item.benefits.map((benefit, idx) => (
+          <span key={idx} className="px-2 py-1 bg-brand-50 text-brand-700 rounded-full text-xs">
+            {benefit}
+          </span>
+        ))}
+      </div>
+      
+      <div className="flex items-center justify-between">
+        <div>
+          <span className="text-2xl font-serif font-semibold text-brand-600">{item.price}</span>
+          <div className="text-sm text-gray-500">{item.reviews} отзывов</div>
+        </div>
+        <motion.button
+          onClick={(e) => {
+            e.stopPropagation();
+            onAddToCart(item);
+          }}
+          className="px-4 py-2 bg-brand-600 text-white rounded-xl font-semibold hover:bg-brand-700 transition-colors"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          Купить
+        </motion.button>
+      </div>
     </div>
   </motion.div>
 )
@@ -837,10 +983,7 @@ const BlogCard = ({ blogPost, index }) => (
   </motion.a>
 )
 
-// Остальные компоненты (PremiumCatalogView, ProfileView) остаются без изменений
-// Добавьте их из вашего предыдущего кода
-
-const PremiumCatalogView = ({ products, onBack, onAddToCart, onAddToFavorites, favorites }) => {
+const PremiumCatalogView = ({ products, onBack, onAddToCart, onAddToFavorites, favorites, onProductClick }) => {
   return (
     <div className="min-h-screen bg-cream-50 p-8">
       <div className="max-w-7xl mx-auto">
@@ -849,8 +992,16 @@ const PremiumCatalogView = ({ products, onBack, onAddToCart, onAddToFavorites, f
         </button>
         <h1 className="font-serif text-4xl font-bold mb-8">Каталог</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {products.map(product => (
-            <ProductCard key={product.id} product={product} onAddToCart={onAddToCart} />
+          {products.map((product, index) => (
+            <ProductCard 
+              key={product.id} 
+              product={product} 
+              onAddToCart={onAddToCart}
+              onProductClick={onProductClick}
+              onAddToFavorites={onAddToFavorites}
+              isFavorite={favorites.some(fav => fav.id === product.id)}
+              index={index}
+            />
           ))}
         </div>
       </div>
@@ -869,11 +1020,70 @@ const ProfileView = ({ user, cart, orderHistory, favorites, onBack, onRemoveFrom
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="bg-white rounded-2xl p-6 shadow-lg">
             <h2 className="font-serif text-2xl font-semibold mb-4">Корзина</h2>
-            {/* Корзина */}
+            {cart.length === 0 ? (
+              <p className="text-gray-600">Корзина пуста</p>
+            ) : (
+              <div className="space-y-4">
+                {cart.map(item => (
+                  <div key={item.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="flex items-center gap-4">
+                      <img src={item.img} alt={item.name} className="w-12 h-12 object-cover rounded" />
+                      <div>
+                        <h3 className="font-semibold">{item.name}</h3>
+                        <p className="text-brand-600">{item.price}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button 
+                        onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
+                        className="w-8 h-8 rounded-full border flex items-center justify-center"
+                      >
+                        -
+                      </button>
+                      <span className="w-8 text-center">{item.quantity}</span>
+                      <button 
+                        onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
+                        className="w-8 h-8 rounded-full border flex items-center justify-center"
+                      >
+                        +
+                      </button>
+                      <button 
+                        onClick={() => onRemoveFromCart(item.id)}
+                        className="ml-4 text-red-500 hover:text-red-700"
+                      >
+                        Удалить
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
           <div className="bg-white rounded-2xl p-6 shadow-lg">
             <h2 className="font-serif text-2xl font-semibold mb-4">Избранное</h2>
-            {/* Избранное */}
+            {favorites.length === 0 ? (
+              <p className="text-gray-600">Нет избранных товаров</p>
+            ) : (
+              <div className="space-y-4">
+                {favorites.map(item => (
+                  <div key={item.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="flex items-center gap-4">
+                      <img src={item.img} alt={item.name} className="w-12 h-12 object-cover rounded" />
+                      <div>
+                        <h3 className="font-semibold">{item.name}</h3>
+                        <p className="text-brand-600">{item.price}</p>
+                      </div>
+                    </div>
+                    <button 
+                      onClick={() => onAddToFavorites(item)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      ❤️
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

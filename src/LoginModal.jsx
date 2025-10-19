@@ -1,4 +1,3 @@
-// LoginModal.jsx
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
 
@@ -217,7 +216,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
                   {[0, 1, 2].map(step => (
                     <motion.div
                       key={step}
-                      className={`flex items-center space-x-4 p-4 rounded-2xl border transition-all ${
+                      className={`flex items-center space-x-4 p-4 rounded-2xl border transition-all interactive ${
                         step === activeStep 
                           ? 'bg-white/60 border-brand-600/30 shadow-sm' 
                           : 'bg-white/30 border-gray-200/50'
@@ -304,7 +303,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
                               type="text"
                               value={isLogin ? formData.username : formData.email}
                               onChange={(e) => handleInputChange(isLogin ? 'username' : 'email', e.target.value)}
-                              className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-brand-600 focus:ring-2 focus:ring-brand-600/20 outline-none transition-all"
+                              className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-brand-600 focus:ring-2 focus:ring-brand-600/20 outline-none transition-all interactive"
                               placeholder=" "
                             />
                             <motion.label
@@ -324,7 +323,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
                                 type="text"
                                 value={formData.username}
                                 onChange={(e) => handleInputChange('username', e.target.value)}
-                                className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-brand-600 focus:ring-2 focus:ring-brand-600/20 outline-none transition-all"
+                                className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-brand-600 focus:ring-2 focus:ring-brand-600/20 outline-none transition-all interactive"
                                 placeholder=" "
                               />
                               <motion.label
@@ -355,7 +354,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
                               type="password"
                               value={formData.password}
                               onChange={(e) => handleInputChange('password', e.target.value)}
-                              className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-brand-600 focus:ring-2 focus:ring-brand-600/20 outline-none transition-all"
+                              className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-brand-600 focus:ring-2 focus:ring-brand-600/20 outline-none transition-all interactive"
                               placeholder=" "
                             />
                             <motion.label
@@ -375,7 +374,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
                                 type="password"
                                 value={formData.confirmPassword}
                                 onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
-                                className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-brand-600 focus:ring-2 focus:ring-brand-600/20 outline-none transition-all"
+                                className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-brand-600 focus:ring-2 focus:ring-brand-600/20 outline-none transition-all interactive"
                                 placeholder=" "
                               />
                               <motion.label
@@ -420,7 +419,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
                         onClick={prevStep}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className={`px-6 py-2 rounded-xl border border-gray-300 text-gray-700 text-sm ${
+                        className={`px-6 py-2 rounded-xl border border-gray-300 text-gray-700 text-sm interactive ${
                           activeStep === 0 ? 'invisible' : ''
                         }`}
                       >
@@ -433,7 +432,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
                           onClick={nextStep}
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
-                          className="px-6 py-2 bg-brand-600 text-white rounded-xl text-sm hover:bg-brand-700 transition-colors"
+                          className="px-6 py-2 bg-brand-600 text-white rounded-xl text-sm hover:bg-brand-700 transition-colors interactive"
                         >
                           Далее
                         </motion.button>
@@ -443,7 +442,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
                           disabled={isLoading}
                           whileHover={{ scale: isLoading ? 1 : 1.02 }}
                           whileTap={{ scale: isLoading ? 1 : 0.98 }}
-                          className="px-8 py-2 bg-brand-600 text-white rounded-xl text-sm hover:bg-brand-700 transition-colors disabled:opacity-50"
+                          className="px-8 py-2 bg-brand-600 text-white rounded-xl text-sm hover:bg-brand-700 transition-colors disabled:opacity-50 interactive"
                         >
                           {isLoading ? (
                             <motion.div
@@ -463,14 +462,14 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
                 <div className="text-center space-y-4 pt-6 border-t border-gray-100">
                   <button
                     onClick={() => setIsLogin(!isLogin)}
-                    className="text-sm text-brand-600 hover:text-brand-700 transition-colors font-medium"
+                    className="text-sm text-brand-600 hover:text-brand-700 transition-colors font-medium interactive"
                   >
                     {isLogin ? 'Нет аккаунта? Создать' : 'Уже есть аккаунт? Войти'}
                   </button>
                   
                   <button
                     onClick={onClose}
-                    className="text-xs text-gray-500 hover:text-gray-700 transition-colors"
+                    className="text-xs text-gray-500 hover:text-gray-700 transition-colors interactive"
                   >
                     Закрыть
                   </button>

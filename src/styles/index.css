@@ -237,6 +237,14 @@
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
 }
 
+.shadow-2xl {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.shadow-3xl {
+  box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.3);
+}
+
 /* Анимация появления */
 @keyframes fadeInUp {
   from {
@@ -502,6 +510,24 @@
   outline-offset: 2px;
 }
 
+/* Стили для интерактивных элементов */
+.interactive {
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.interactive:hover {
+  transform: translateY(-2px);
+}
+
+/* Кастомный курсор */
+.custom-cursor {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  transition: transform 0.1s ease;
+}
+
 /* Темная тема (опционально) */
 @media (prefers-color-scheme: dark) {
   .dark-mode {
@@ -536,4 +562,42 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+  
+  .interactive:hover {
+    transform: none;
+  }
+}
+
+/* Плавные анимации для всех интерактивных элементов */
+button, a, .interactive {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Улучшенные hover эффекты */
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Анимация появления для модальных окон */
+.modal-enter {
+  opacity: 0;
+  transform: scale(0.9) translateY(20px);
+}
+
+.modal-enter-active {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.modal-exit {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+.modal-exit-active {
+  opacity: 0;
+  transform: scale(0.9) translateY(20px);
+  transition: opacity 300ms, transform 300ms;
 }
