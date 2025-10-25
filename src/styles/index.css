@@ -22,6 +22,50 @@
 .font-serif { font-family: 'Playfair Display', serif; }
 .font-sans { font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; }
 
+/* Стили для статичной шапки */
+.static-header {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Плавный скролл для всей страницы */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Убираем отступ у body */
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* Адаптивность для шапки */
+@media (max-width: 768px) {
+  .static-header nav {
+    display: none;
+  }
+  
+  .user-menu {
+    font-size: 0.875rem;
+  }
+}
+
+/* Анимация появления шапки */
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.header-enter {
+  animation: slideDown 0.6s ease-out;
+}
+
 /* Стили для ползунка цены */
 .slider {
   -webkit-appearance: none;

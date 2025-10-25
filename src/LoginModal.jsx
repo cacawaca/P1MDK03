@@ -85,14 +85,19 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
     // Имитация загрузки
     await new Promise(resolve => setTimeout(resolve, 1500));
     
-    // Проверка пароля
-    if (formData.password !== 'password') {
+    // ПРОСТАЯ ПРОВЕРКА - пароль может быть любым
+    if (!formData.password) {
       setIsLoading(false);
       return;
     }
     
-    onLogin({ username: formData.username || formData.email });
-    onClose();
+    // Создаем пользователя с данными из формы
+    const userData = {
+      username: formData.username || formData.email?.split('@')[0] || 'Пользователь',
+      email: formData.email
+    };
+    
+    onLogin(userData);
     setIsLoading(false);
   };
 
